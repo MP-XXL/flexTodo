@@ -1,7 +1,7 @@
     // ── CONFIG ────────────────────────────────────────────────────────
     // In production this points to your Render backend URL.
   
-    const API = "https://flextodo.onrender.com" || 'http://localhost:8000/api/v1'
+    const API = "https://flextodo.onrender.com/api/v1" || 'http://localhost:8000/api/v1'
     // ─────────────────────────────────────────────────────────────────
 
     // ── STORAGE ───────────────────────────────────────────────────────
