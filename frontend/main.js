@@ -1,11 +1,7 @@
     // ── CONFIG ────────────────────────────────────────────────────────
     // In production this points to your Render backend URL.
-    // Vercel environment variables are not available at runtime for plain
-    // static HTML — so we read from window.__ENV__ if injected (e.g. via
-    // a Vercel Edge Function or build script), otherwise fall back to the
-    // value set directly here.
-    const API = (window.__ENV__ && window.__ENV__.API_URL)
-      || 'http://localhost:8000/api/v1'
+  
+    const API = "https://flextodo.onrender.com" || 'http://localhost:8000/api/v1'
     // ─────────────────────────────────────────────────────────────────
 
     // ── STORAGE ───────────────────────────────────────────────────────
