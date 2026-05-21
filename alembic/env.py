@@ -3,24 +3,15 @@ import sys
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import create_engine, pool
 
-# ---------------------------------------------------------------------------
-# Make the app package importable from alembic CLI context
-# ---------------------------------------------------------------------------
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from app.core.config import settings  # noqa: E402
-from app.db.session import Base  # noqa: E402
-import app.models  # noqa: E402, F401  — registers all models for autogenerate
+from app.db.session import Base       # noqa: E402
+import app.models                     # noqa: E402, F401
 
-# ---------------------------------------------------------------------------
-# Alembic Config object
-# ---------------------------------------------------------------------------
 config = context.config
-
-# Override the sqlalchemy.url from our settings so we don't duplicate config.
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -28,15 +19,10 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 
-# ---------------------------------------------------------------------------
-# Migration runners
-# ---------------------------------------------------------------------------
-
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode (emit SQL to stdout)."""
-    url = config.get_main_option("sqlalchemy.url")
+    """Emit SQL to stdout without a live connection."""
     context.configure(
-        url=url,
+        url=settings.DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -46,10 +32,14 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode (connect to live database)."""
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    """Run migrations against a live database connection.
+
+    We construct the engine directly from settings.DATABASE_URL instead of
+    going through alembic's config.set_main_option / configparser — that
+    pathway chokes on special characters (%, @) in the URL.
+    """
+    connectable = create_engine(
+        settings.DATABASE_URL,
         poolclass=pool.NullPool,
     )
     with connectable.connect() as connection:

@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # CORS — comma-separated list of allowed origins.
     # Use "*" for development; set explicit origins in production.
     # Example: "https://flextodo.vercel.app,https://www.flextodo.com"
-    ALLOWED_ORIGINS: str = "*"
+    ALLOWED_ORIGINS: str = "https://flex-todo-coral.vercel.app/"
 
     model_config = SettingsConfigDict(
         env_file=".env",
