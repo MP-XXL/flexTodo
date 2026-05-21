@@ -1,0 +1,35 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy with: connect this repo to Render and it auto-detects this file.
+
+services:
+  - type: web
+    name: flextodo-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon          # change to your preferred region
+    plan: free              # upgrade to starter+ for production
+    healthCheckPath: /health
+
+    envVars:
+      - key: APP_ENV
+        value: production
+
+      - key: DATABASE_URL
+        # Paste your Supabase "Transaction pooler" connection string here.
+        # Format: postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+        sync: false
+
+      - key: JWT_SECRET_KEY
+        # Generate with: python -c "import secrets; print(secrets.token_hex(32))"
+        generateValue: true
+
+      - key: JWT_ALGORITHM
+        value: HS256
+
+      - key: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+
+      - key: ALLOWED_ORIGINS
+        # Set to your Vercel frontend URL once deployed.
+        # Example: https://flextodo.vercel.app
+        sync: false

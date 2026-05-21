@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlexTodo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/output.css">
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    code, .mono { font-family: 'DM Mono', monospace; }
+    .fade-in { animation: fadeIn 0.18s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+  <!-- ── NAV ─────────────────────────────────────────────────────── -->
+  <nav class="border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
+    <span class="mono text-lg font-medium text-white tracking-tight">flex<span class="text-amber-400">todo</span></span>
+    <div id="nav-auth" class="flex gap-3 items-center text-sm">
+      <!-- populated by renderNav() -->
+    </div>
+  </nav>
+
+  <!-- ── MAIN ─────────────────────────────────────────────────────── -->
+  <main class="max-w-2xl mx-auto px-4 py-10 space-y-10">
+
+    <!-- AUTH SECTION -->
+    <section id="section-auth" class="hidden fade-in">
+      <div class="flex gap-1 mb-6 bg-zinc-900 p-1 rounded-lg w-fit">
+        <button id="tab-login" onclick="switchTab('login')"
+          class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
+          Login
+        </button>
+        <button id="tab-register" onclick="switchTab('register')"
+          class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors">
+          Register
+        </button>
+      </div>
+
+      <!-- Login form -->
+      <div id="form-login" class="hidden">
+        <h2 class="text-xl font-semibold mb-5">Welcome back</h2>
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">Email</label>
+            <input id="login-email" type="email" required placeholder="you@example.com"
+              class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">Password</label>
+            <input id="login-password" type="password" required placeholder="••••••••"
+              class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+          </div>
+          <div id="login-error" class="hidden text-red-400 text-sm py-2 px-3 bg-red-950 border border-red-800 rounded-lg"></div>
+          <button type="submit" id="login-btn"
+            class="w-full bg-amber-400 hover:bg-amber-300 text-zinc-950 font-semibold rounded-lg px-4 py-2.5 text-sm transition-colors">
+            Login
+          </button>
+        </form>
+      </div>
+
+      <!-- Register form -->
+      <div id="form-register" class="hidden">
+        <h2 class="text-xl font-semibold mb-5">Create account</h2>
+        <form onsubmit="handleRegister(event)" class="space-y-4">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">First name</label>
+              <input id="reg-first" type="text" required placeholder="Ada"
+                class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">Last name</label>
+              <input id="reg-last" type="text" required placeholder="Lovelace"
+                class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">Email</label>
+            <input id="reg-email" type="email" required placeholder="you@example.com"
+              class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-400 mb-1.5 uppercase tracking-wide">Password <span class="normal-case text-zinc-600">(min 8 chars)</span></label>
+            <input id="reg-password" type="password" required placeholder="••••••••" minlength="8"
+              class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-amber-400 transition-colors" />
+          </div>
+          <div id="register-error" class="hidden text-red-400 text-sm py-2 px-3 bg-red-950 border border-red-800 rounded-lg"></div>
+          <div id="register-success" class="hidden text-emerald-400 text-sm py-2 px-3 bg-emerald-950 border border-emerald-800 rounded-lg"></div>
+          <button type="submit" id="register-btn"
+            class="w-full bg-amber-400 hover:bg-amber-300 text-zinc-950 font-semibold rounded-lg px-4 py-2.5 text-sm transition-colors">
+            Create account
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- USER TODOS SECTION -->
+    <section id="section-todos" class="hidden fade-in space-y-6">
+      <div>
+        <h2 class="text-xl font-semibold">My Todos</h2>
+        <p id="user-greeting" class="text-zinc-400 text-sm mt-0.5"></p>
+      </div>
+
+      <!-- Create todo form -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
+        <h3 class="text-sm font-medium text-zinc-300">New todo</h3>
+        <input id="todo-title" type="text" placeholder="Title"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 transition-colors" />
+        <textarea id="todo-body" rows="2" placeholder="Description"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 transition-colors resize-none"></textarea>
+        <div id="todo-create-error" class="hidden text-red-400 text-xs py-1.5 px-3 bg-red-950 border border-red-800 rounded-lg"></div>
+        <button onclick="handleCreateTodo()"
+          class="bg-amber-400 hover:bg-amber-300 text-zinc-950 font-semibold rounded-lg px-4 py-2 text-sm transition-colors">
+          Add todo
+        </button>
+      </div>
+
+      <!-- Todo list -->
+      <div id="todo-list" class="space-y-2"></div>
+      <div id="todo-empty" class="hidden text-center text-zinc-600 text-sm py-8">No todos yet. Add one above.</div>
+      <div id="todo-loading" class="hidden text-center text-zinc-600 text-sm py-8">Loading...</div>
+    </section>
+
+    <!-- GUEST TODOS SECTION -->
+    <section id="section-guest" class="hidden fade-in space-y-6">
+      <div>
+        <h2 class="text-xl font-semibold">Guest Todos</h2>
+        <p class="text-zinc-400 text-sm mt-0.5">Public todos — no account needed</p>
+      </div>
+
+      <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-3">
+        <h3 class="text-sm font-medium text-zinc-300">Post a guest todo</h3>
+        <input id="guest-title" type="text" placeholder="Title"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 transition-colors" />
+        <textarea id="guest-body" rows="2" placeholder="Description"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400 transition-colors resize-none"></textarea>
+        <div id="guest-create-error" class="hidden text-red-400 text-xs py-1.5 px-3 bg-red-950 border border-red-800 rounded-lg"></div>
+        <button onclick="handleCreateGuestTodo()"
+          class="bg-zinc-700 hover:bg-zinc-600 text-white font-semibold rounded-lg px-4 py-2 text-sm transition-colors">
+          Post todo
+        </button>
+      </div>
+
+      <div id="guest-todo-list" class="space-y-2"></div>
+      <div id="guest-empty" class="hidden text-center text-zinc-600 text-sm py-8">No guest todos yet.</div>
+      <div id="guest-loading" class="hidden text-center text-zinc-600 text-sm py-8">Loading...</div>
+    </section>
+
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
